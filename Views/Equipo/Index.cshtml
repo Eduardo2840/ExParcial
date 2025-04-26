@@ -1,57 +1,43 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Crear Equipos de Fútbol</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>Creación de Equipos de Fútbol</h1>
+@{
+    ViewData["Title"] = "Asociar Jugador a Equipo";
+    var jugadores = ViewBag.Jugadores as List<ExParcial.Models.Player>;
+    var equipos = ViewBag.Equipos as List<ExParcial.Models.Team>;
+}
 
-  <form id="formEquipo" onsubmit="crearEquipo(event)">
-    <label>Nombre del Equipo:</label>
-    <input type="text" id="nombreEquipo" required>
+<h2>Asociar Jugador a Equipo</h2>
 
-    <label>Ciudad:</label>
-    <input type="text" id="ciudad" required>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(e => e.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
 
-    <label>Año de Fundación:</label>
-    <input type="number" id="fundacion" min="1800" max="2025" required>
+<form asp-action="AsociarJugador" method="post">
+    <div class="form-group">
+        <label for="jugadorId">Jugador</label>
+        <select class="form-control" name="jugadorId" required>
+            <option value="">Seleccione un jugador</option>
+            @foreach (var jugador in jugadores)
+            {
+                <option value="@jugador.Id">@jugador.Nombre</option>
+            }
+        </select>
+    </div>
 
-    <button type="submit">Crear Equipo</button>
-  </form>
+    <div class="form-group">
+        <label for="equipoId">Equipo</label>
+        <select class="form-control" name="equipoId" required>
+            <option value="">Seleccione un equipo</option>
+            @foreach (var equipo in equipos)
+            {
+                <option value="@equipo.Id">@equipo.Nombre</option>
+            }
+        </select>
+    </div>
 
-  <h2>Equipos Registrados</h2>
-  <ul id="listaEquipos"></ul>
-
-  <script>
-    const equipos = [];
-
-    function crearEquipo(event) {
-      event.preventDefault();
-
-      const nombre = document.getElementById('nombreEquipo').value.trim();
-      const ciudad = document.getElementById('ciudad').value.trim();
-      const fundacion = document.getElementById('fundacion').value;
-
-      if (!nombre || !ciudad || !fundacion) {
-        alert("Por favor, completa todos los campos.");
-        return;
-      }
-
-      equipos.push({ nombre, ciudad, fundacion });
-      mostrarEquipos();
-      document.getElementById('formEquipo').reset();
-    }
-
-    function mostrarEquipos() {
-      const lista = document.getElementById('listaEquipos');
-      lista.innerHTML = equipos.map(eq =>
-        `<li>
-          <strong>${eq.nombre}</strong> - Ciudad: ${eq.ciudad} | Fundado en ${eq.fundacion}
-        </li>`
-      ).join('');
-    }
-  </script>
-</body>
-</html>
+    <button type="submit" class="btn btn-primary mt-2">Asociar</button>
+</form>
