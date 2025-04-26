@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Equipos de Fútbol</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Creación de Equipos de Fútbol</h1>
+
+  <form id="formEquipo" onsubmit="crearEquipo(event)">
+    <label>Nombre del Equipo:</label>
+    <input type="text" id="nombreEquipo" required>
+
+    <label>Ciudad:</label>
+    <input type="text" id="ciudad" required>
+
+    <label>Año de Fundación:</label>
+    <input type="number" id="fundacion" min="1800" max="2025" required>
+
+    <button type="submit">Crear Equipo</button>
+  </form>
+
+  <h2>Equipos Registrados</h2>
+  <ul id="listaEquipos"></ul>
+
+  <script>
+    const equipos = [];
+
+    function crearEquipo(event) {
+      event.preventDefault();
+
+      const nombre = document.getElementById('nombreEquipo').value.trim();
+      const ciudad = document.getElementById('ciudad').value.trim();
+      const fundacion = document.getElementById('fundacion').value;
+
+      if (!nombre || !ciudad || !fundacion) {
+        alert("Por favor, completa todos los campos.");
+        return;
+      }
+
+      equipos.push({ nombre, ciudad, fundacion });
+      mostrarEquipos();
+      document.getElementById('formEquipo').reset();
+    }
+
+    function mostrarEquipos() {
+      const lista = document.getElementById('listaEquipos');
+      lista.innerHTML = equipos.map(eq =>
+        `<li>
+          <strong>${eq.nombre}</strong> - Ciudad: ${eq.ciudad} | Fundado en ${eq.fundacion}
+        </li>`
+      ).join('');
+    }
+  </script>
+</body>
+</html>
